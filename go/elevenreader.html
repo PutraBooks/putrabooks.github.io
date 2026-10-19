@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Opening in ElevenReader — PutraBooks</title>
+<meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{background:#0e0f13;color:#e8e6e1;font-family:Helvetica,Arial,sans-serif;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center}
+p{color:#9a97a0;margin:0 0 18px}a{color:#d4a94e}</style></head><body>
+<div><p>Opening the book in ElevenReader…</p><p><a id="go" href="https://elevenreader.io/">Continue to ElevenReader</a></p></div>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var u = q.get("u") || "https://elevenreader.io/";
+  var id = u.split("/").pop().split("?")[0].split("#")[0];
+  var a = document.getElementById("go");
+  a.href = u; a.textContent = "Open the book page on elevenreader.io";
+  var t0 = Date.now();
+  if (/^https:\/\/elevenreader\.io\/audiobooks\/.+\/[A-Za-z0-9]{10,}$/.test(u) && id) {
+    try { location.href = "elevenlabs://read/" + id; } catch (e) {}
+    setTimeout(function(){
+      if (!document.hidden && Date.now() - t0 < 4000) { location.replace(u); }
+    }, 1500);
+  } else { location.replace(u); }
+})();
+</script></body></html>
