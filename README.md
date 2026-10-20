@@ -15,11 +15,19 @@ plus 2 sold — all delivered as PDFs after purchase.
 | `gumroad-*.html`, `kindle-*.html`, `kobo-*.html`, `elevenreader-*.html` | Store redirect pages for other sales channels |
 | `series/` | Series information pages |
 | `covers/` | Book cover art (101 PNGs) |
-| `samples/` | Free sample PDFs per series |
+| `samples/` | Free sample PDFs per series, each with a matching QR code |
 | `downloads/<hash>/` | **Buyer delivery folders** — one per book (969). See below |
 | `go/` | Short-link redirect pages |
 | `sitemap.xml`, `robots.txt` | Search engine setup (submitted via IndexNow) |
 | `REPO-RULES.md` | **Repository rules** — what may/may not be committed here; read before pushing |
+
+## Sample QR codes
+
+Every free sample PDF in `samples/<series>/` has a matching QR code next to it,
+named `<book-slug>-sample-qr.png`. Scanning it opens that book's sample PDF
+on this site, where it can be read or saved. The QR encodes the exact public
+sample URL (ISO standard, error correction M, black on white, RGB mode) and
+never changes.
 
 ## The QR buyer-delivery system
 
