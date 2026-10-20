@@ -20,6 +20,8 @@ ever lands here.
   pairs a book title (or slug, or Carousell listing) with a `downloads/` hash.
 - **No book-info or metadata files inside delivery folders.** A delivery folder
   contains only `qr.png` (and the PDF once the book has sold). Nothing else.
+  (`book-info.txt` is never created ANYWHERE — the private kit's
+  `QR-INDEX.csv` is the single source of truth for the mapping.)
 - **No internal documentation.** Security reasoning, pricing strategy, credit
   notes, owner decisions, fulfillment procedures — all of that lives in the
   private repo `PutraBooks/ebook-instructions`.
