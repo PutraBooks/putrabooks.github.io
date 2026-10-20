@@ -4,6 +4,8 @@ Public storefront and buyer-delivery site for PutraBooks, the Carousell ebook bu
 (`carousell.sg/u/putrabooks`). **969 books listed** — 967 active S$1 ebook listings
 plus 2 sold — all delivered as PDFs after purchase.
 
+> **Contributing/ops rule of thumb:** see [`REPO-RULES.md`](REPO-RULES.md) — what belongs in this public repo, what never does, and the sale-delivery summary.
+
 ## Repository layout
 
 | Path | Purpose |
@@ -17,6 +19,7 @@ plus 2 sold — all delivered as PDFs after purchase.
 | `downloads/<hash>/` | **Buyer delivery folders** — one per book (969). See below |
 | `go/` | Short-link redirect pages |
 | `sitemap.xml`, `robots.txt` | Search engine setup (submitted via IndexNow) |
+| `REPO-RULES.md` | **Repository rules** — what may/may not be committed here; read before pushing |
 
 ## The QR buyer-delivery system
 
