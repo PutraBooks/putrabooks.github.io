@@ -58,14 +58,23 @@ If a mapping file, book-info file, or secret is ever accidentally pushed:
 ## 6. When a book sells (summary)
 
 Look up the book's hash and exact PDF filename in the private kit's
-`QR-INDEX.csv`, add the PDF as `downloads/<hash>/<file_slug>.pdf`, push `main`,
-then send the buyer the folder's `qr.png` in Carousell chat. Full procedure:
+`QR-INDEX.csv`, **encrypt the PDF first** (AES-256, password = the buyer's
+exact Carousell username — pikepdf one-liner in the runbook), add it as
+`downloads/<hash>/<file_slug>.pdf`, push `main`, then send the buyer the
+folder's `qr.png` in Carousell chat together with the note "password is your
+Carousell username". Full procedure:
 `PutraBooks/ebook-instructions` → `Documents/carousell-order-fulfillment.md`.
 
 ## 7. Delivery folder invariants
 
 - One folder per book; hash is a random 12-hex value, unique, never reused.
 - The QR (`qr.png`) is RGB-mode PNG and never changes once created.
+- A delivery folder contains ONLY `qr.png` before sale and `qr.png` +
+  the encrypted PDF after sale — nothing else, ever (`book-info.txt` is a
+  local-only working file; see §2).
+- Delivered PDFs are AES-256 encrypted with the buyer's exact Carousell
+  username as password. Anyone can download (cloners included) — nobody
+  without the password can open. Never replace an encrypted PDF with a plain one.
 - If hashes are ever rotated, ALL unsold folders rotate together; sold books'
   folders never change (past buyers' links must keep working).
 - An unsold book's PDF URL must return 404. Verify after every change.
