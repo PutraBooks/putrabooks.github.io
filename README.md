@@ -63,12 +63,6 @@ the fulfillment runbook `Documents/carousell-order-fulfillment.md`).
 
 ### Technical notes
 
-- Hashes are unique random 12-hex values per book; URLs are unguessable, so PDFs are
-  protected by obscurity of the link alone (acceptable for S$1 ebooks).
-- QR codes: ISO standard, error correction level M, black on white, **RGB mode**
-  (1-bit palette PNGs render black-on-black in Carousell chat); all 969 verified
-  to decode exactly to their download URL.
-- Generated fully offline (Python `qrcode` library) — zero AI/cloud/API credits used.
-- The QR for a book never changes; the same kit serves every future buyer of that book.
-- System deployed 2026-10-20 in commits `0be8c1a` (kit), `97ab152` (delivery folders),
-  with mapping docs kept privately in the ebook-instructions repo.
+- Folder hashes are unique random 12-hex values per book.
+- QR codes: ISO standard, error correction level M, black on white, RGB mode.
+- The QR for a book never changes; the same QR serves every future buyer of that book.
