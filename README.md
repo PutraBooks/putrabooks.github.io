@@ -14,8 +14,7 @@ plus 2 sold — all delivered as PDFs after purchase.
 | `series/` | Series information pages |
 | `covers/` | Book cover art (101 PNGs) |
 | `samples/` | Free sample PDFs per series |
-| `downloads/<hash>/` | **Buyer delivery folders** — one per book (969). See `qr/README.md` |
-| `qr/` | **QR download kit** — 969 QR codes, index CSV, visual catalog. See `qr/README.md` |
+| `downloads/<hash>/` | **Buyer delivery folders** — one per book (969). See below |
 | `go/` | Short-link redirect pages |
 | `sitemap.xml`, `robots.txt` | Search engine setup (submitted via IndexNow) |
 
@@ -27,31 +26,23 @@ Every book has a permanent, unguessable download location:
 https://putrabooks.github.io/downloads/<hash>/<book-slug>.pdf
 ```
 
-Each book's `downloads/<hash>/` folder is pre-created with:
+Each book's `downloads/<hash>/` folder contains only `qr.png` — the book's QR code,
+pointing at that exact PDF URL. Folder names are random 12-hex values with **no
+index, catalog, or book names anywhere on this public site**, so a buyer who scans
+their QR can reach only their own book.
 
-- `qr.png` — the book's QR code, which points at that exact PDF URL
-- `book-info.txt` — book title, Carousell listing, the exact required PDF filename, and instructions
-
-The PDF itself is **not** hosted until the book sells. Nothing is public or scannable
-in advance, so no credits, storage, or bandwidth are spent on unsold inventory.
+The PDF itself is **not** hosted until the book sells.
 
 ### When a book sells
 
-1. Find the book's row in [`qr/QR-INDEX.csv`](qr/QR-INDEX.csv) or in the
-   [visual catalog](https://putrabooks.github.io/qr/QR-CATALOG.html) — both list title,
-   Carousell URL, hash, and download URL.
-2. Drop the buyer's PDF into `downloads/<hash>/` with the exact filename given in that
-   folder's `book-info.txt` (always `<book-slug>.pdf`).
-3. Commit and push this repository (`main`). The download URL goes live instantly.
-4. Send the buyer the QR image (`qr/<book-slug>.png`, also mirrored in the delivery
-   folder as `qr.png`) or the download link, in Carousell chat.
+The book → hash → URL mapping lives in the private repo
+`PutraBooks/ebook-instructions` → `QR-Delivery/` (index CSV, visual catalog, and
+the fulfillment runbook `Documents/carousell-order-fulfillment.md`).
 
-### QR kit contents (`qr/`)
-
-- `qr/<book-slug>.png` — 969 scannable QR codes (one per book, named by slug)
-- `QR-INDEX.csv` — full mapping: title, series, listing ID/URL, hash, download URL, PDF status
-- `QR-CATALOG.html` — visual reference of every QR, grouped by series
-- `README.md` / `README.txt` — system documentation
+1. Look up the book's hash and exact PDF filename in `QR-Delivery/QR-INDEX.csv`.
+2. Add the buyer's PDF to `downloads/<hash>/` with that exact filename.
+3. Commit and push `main`. The download URL goes live instantly.
+4. Send the buyer the folder's `qr.png` in Carousell chat.
 
 ### Series inventory (969 books)
 
@@ -74,8 +65,10 @@ in advance, so no credits, storage, or bandwidth are spent on unsold inventory.
 
 - Hashes are unique random 12-hex values per book; URLs are unguessable, so PDFs are
   protected by obscurity of the link alone (acceptable for S$1 ebooks).
-- QR codes: ISO standard, error correction level M, black-on-white; all 969 verified
+- QR codes: ISO standard, error correction level M, black on white, **RGB mode**
+  (1-bit palette PNGs render black-on-black in Carousell chat); all 969 verified
   to decode exactly to their download URL.
 - Generated fully offline (Python `qrcode` library) — zero AI/cloud/API credits used.
 - The QR for a book never changes; the same kit serves every future buyer of that book.
-- System deployed in commits `0be8c1a` (kit) and `97ab152` (delivery folders).
+- System deployed 2026-10-20 in commits `0be8c1a` (kit), `97ab152` (delivery folders),
+  with mapping docs kept privately in the ebook-instructions repo.
