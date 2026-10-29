@@ -14,6 +14,27 @@ ever lands here.
 | Buyer delivery folders | `downloads/<hash>/` — only `qr.png` before sale; `<book-slug>.pdf` added after that book sells |
 | Site plumbing | `sitemap.xml`, `robots.txt`, verification files, `go/` redirects |
 
+## 1a. Sample PDFs follow the house build
+
+Every file under `samples/<series>/<slug>-sample.pdf` is built, not hand-edited:
+
+- Contents: the book's first 7 pages, then the book's own `ABOUT THE AUTHOR` page
+  copied from the built PDF. Nothing else is added.
+- Page 1: a bold `Buy the full book:` header, then one short underlined clickable
+  row per publisher, 20pt apart. No price and no raw URL. A new store is a new row,
+  never a new header.
+- Each row links to the same href the matching card's buy button uses in
+  `series/<series>.html`, read from that page, so the sample and the storefront
+  cannot disagree.
+
+Builder: `Scripts/samples/build_sample_pdf.py` in the private
+`PutraBooks/Ebook-Instructions` repo; reference `Documents/sample-pdfs-and-qr-codes.md`
+there.
+
+GitHub Pages takes roughly two minutes to serve new bytes. A phone that keeps
+opening the previous version is showing a cached copy of the same URL; send the
+buyer `?v=2`, do not re-upload the PDF.
+
 ## 2. What must NEVER be committed
 
 - **Any book → hash mapping.** No index, catalog, CSV, spreadsheet, or list that
