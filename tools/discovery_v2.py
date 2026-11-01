@@ -76,6 +76,9 @@ def esc(t):
 
 def load_books():
     books = {}
+    if os.path.exists("tools/page_index.json"):
+        for k, v in json.load(open("tools/page_index.json", encoding="utf-8")).items():
+            books.setdefault(k, {"file": v, "title": k})
     for f in sorted(glob.glob("books/*.html")):
         s = open(f, encoding="utf-8").read()
         m = re.search(r"<h1>(.*?)</h1>", s, re.S)
@@ -180,7 +183,7 @@ def schema(title, desc, cover, price, url, card, series_label, author, sample):
 
 def update_book(path, cards):
     s = open(path, encoding="utf-8").read()
-    if MARK in s:
+    if MARK in s or 'class="stores"' in s or 'data-page="generated"' in s:
         return "skip"
     m_title = re.search(r"<h1>(.*?)</h1>", s, re.S)
     title = html.unescape(m_title.group(1)).strip()

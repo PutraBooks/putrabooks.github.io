@@ -7,6 +7,7 @@ this file lists HTML pages only.
 
 Run from the repo root:  python3 tools/build_sitemap.py
 """
+import datetime
 import glob
 import os
 import subprocess
@@ -45,7 +46,7 @@ def pages():
 def main():
     rows = []
     for f in pages():
-        stamp = git_date(f) or "2026-01-01"
+        stamp = git_date(f) or datetime.date.fromtimestamp(os.path.getmtime(f)).isoformat()
         rows.append(f"  <url><loc>{BASE}/{f}</loc><lastmod>{stamp}</lastmod></url>")
     with open("sitemap.xml", "w", encoding="utf-8") as fh:
         fh.write('<?xml version="1.0" encoding="UTF-8"?>\n')
