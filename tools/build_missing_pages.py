@@ -188,7 +188,7 @@ def page_html(card, slug, author, ctx):
         bits.append(f'<a href="{esc(card["links"]["elevenreader"])}">Listen on ElevenReader</a>')
     stores = f'<p class="stores">{"".join(bits)}</p>' if bits else ""
     storefront_links = "".join(f'<a href="{esc(u)}">{esc(n)}</a> ' for n, u in STOREFRONTS)
-    allstores = (f'<p class="allstores">Also on {storefront_links}&middot; DRM-free EPUB + PDF.</p>')
+    allstores = (f'<p class="allstores">Also on {storefront_links}</p>')
 
     data = {
         "@context": "https://schema.org",
