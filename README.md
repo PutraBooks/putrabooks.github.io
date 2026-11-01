@@ -21,7 +21,8 @@ active S$1 ebook listings plus 2 sold — all delivered as PDFs after purchase, 
 | `downloads/<hash>/` | **Buyer delivery folders** — one per book (969). See below |
 | `go/` | Short-link redirect pages |
 | `sitemap.xml`, `sitemap-samples.xml`, `robots.txt` | Search engine setup (submitted via IndexNow): 1,177 page URLs and 1,280 sample URLs |
-| `tools/` | Builders and auditors: `build_missing_pages.py` (`--report`, `--refresh`), `page_index.json`, `build_sitemap.py`, `build_samples_sitemap.py`, `discovery_v2.py`, `elevenreader_status.py` |
+| `track.js` | The analytics beacon: one row per page view, outbound store click and sample download, posted to the Base44 function `trackSiteEvent`. No cookies, no IP stored |
+| `tools/` | Builders and auditors: `build_missing_pages.py` (`--report`, `--refresh`), `page_index.json`, `build_sitemap.py`, `build_samples_sitemap.py`, `discovery_v2.py`, `elevenreader_status.py`, `add_tracking.py` (puts the beacon on every page, idempotent) |
 | `REPO-RULES.md` | **Repository rules** — what may/may not be committed here; read before pushing |
 
 ## Sample QR codes
