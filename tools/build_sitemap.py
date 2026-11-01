@@ -28,14 +28,17 @@ def git_date(path):
 
 def pages():
     found = ["index.html"]
-    for pattern in ("*.html", "series/*.html", "books/*.html"):
+    for pattern in ("*.html", "series/*.html", "books/*.html", "samples/index.html"):
         found += glob.glob(pattern)
     out = []
     for f in found:
         name = os.path.basename(f)
         if name.startswith(SKIP_PREFIX) or f.startswith(SKIP_DIRS):
             continue
-        out.append(f)
+        if f == "index.html":
+            out.append("")  # the home page is the bare root URL
+        else:
+            out.append(f)
     return sorted(set(out))
 
 
