@@ -1,8 +1,9 @@
 # PutraBooks Storefront (putrabooks.github.io)
 
-Public storefront and buyer-delivery site for PutraBooks, the Carousell ebook business
-(`carousell.sg/u/putrabooks`). **969 books listed** — 967 active S$1 ebook listings
-plus 2 sold — all delivered as PDFs after purchase.
+Public storefront, catalogue and buyer-delivery site for PutraBooks, the Carousell
+ebook business (`carousell.sg/u/putrabooks`). **969 books listed on Carousell** — 967
+active S$1 ebook listings plus 2 sold — all delivered as PDFs after purchase, and
+**1,141 books have their own page on this site** (as of 2026-11-01).
 
 > **Contributing/ops rule of thumb:** see [`REPO-RULES.md`](REPO-RULES.md) — what belongs in this public repo, what never does, and the sale-delivery summary.
 
@@ -13,12 +14,14 @@ plus 2 sold — all delivered as PDFs after purchase.
 | `index.html` | Brand landing page |
 | `carousell-<series>.html` | Shelf pages: all active Carousell listings, grouped into series |
 | `gumroad-*.html`, `kindle-*.html`, `kobo-*.html`, `elevenreader-*.html` | Store redirect pages for other sales channels |
-| `series/` | Series information pages |
+| `books/` | **One page per book (1,141)** — cover, table of contents, buy button, store links, `Book` schema. 783 of them are generated from the series card data and marked `data-page="generated"` |
+| `series/` | Series information pages (12) |
 | `covers/` | Book cover art (101 PNGs) |
 | `samples/` | Free sample PDFs per series, each with a matching QR code |
 | `downloads/<hash>/` | **Buyer delivery folders** — one per book (969). See below |
 | `go/` | Short-link redirect pages |
-| `sitemap.xml`, `robots.txt` | Search engine setup (submitted via IndexNow) |
+| `sitemap.xml`, `sitemap-samples.xml`, `robots.txt` | Search engine setup (submitted via IndexNow): 1,177 page URLs and 1,280 sample URLs |
+| `tools/` | Builders and auditors: `build_missing_pages.py` (`--report`, `--refresh`), `page_index.json`, `build_sitemap.py`, `build_samples_sitemap.py`, `discovery_v2.py`, `elevenreader_status.py` |
 | `REPO-RULES.md` | **Repository rules** — what may/may not be committed here; read before pushing |
 
 ## Sample QR codes
