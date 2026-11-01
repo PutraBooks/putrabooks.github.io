@@ -46,7 +46,8 @@ def pages():
 def main():
     rows = []
     for f in pages():
-        stamp = git_date(f) or datetime.date.fromtimestamp(os.path.getmtime(f)).isoformat()
+        src = f or "index.html"
+        stamp = git_date(src) or datetime.date.fromtimestamp(os.path.getmtime(src)).isoformat()
         rows.append(f"  <url><loc>{BASE}/{f}</loc><lastmod>{stamp}</lastmod></url>")
     with open("sitemap.xml", "w", encoding="utf-8") as fh:
         fh.write('<?xml version="1.0" encoding="UTF-8"?>\n')
