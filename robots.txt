@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
 Sitemap: https://putrabooks.github.io/sitemap.xml
+Sitemap: https://putrabooks.github.io/sitemap-samples.xml
