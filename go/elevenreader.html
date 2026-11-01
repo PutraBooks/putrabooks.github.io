@@ -1,21 +1,58 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Opening in ElevenReader — PutraBooks</title>
 <meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
-<style>body{background:#0e0f13;color:#e8e6e1;font-family:Helvetica,Arial,sans-serif;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center}
-p{color:#9a97a0;margin:0 0 18px}a{color:#d4a94e}</style></head><body>
-<div><p>Opening the book in ElevenReader…</p><p><a id="go" href="https://elevenreader.io/">Continue to ElevenReader</a></p></div>
+<style>body{background:#0e0f13;color:#e8e6e1;font-family:Helvetica,Arial,sans-serif;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box}
+h1{font-size:1.05rem;font-weight:600;margin:0 0 12px}p{color:#9a97a0;margin:0 0 18px;line-height:1.5;max-width:32em}
+a{color:#d4a94e}.btn{display:inline-block;border:1px solid #d4a94e;border-radius:6px;padding:9px 16px;margin:4px;text-decoration:none;font-size:.92rem}
+.muted{color:#6f6c75;font-size:.8rem}</style></head><body>
+<div>
+  <h1 id="h">Opening the book in ElevenReader…</h1>
+  <p id="m"><a id="go" href="https://elevenreader.io/">Continue to ElevenReader</a></p>
+  <p class="muted" id="foot"></p>
+</div>
 <script>
 (function(){
   var q = new URLSearchParams(location.search);
   var u = q.get("u") || "https://elevenreader.io/";
   var id = u.split("/").pop().split("?")[0].split("#")[0];
-  var a = document.getElementById("go");
-  a.href = u; a.textContent = "Open the book page on elevenreader.io";
-  var t0 = Date.now();
-  if (/^https:\/\/elevenreader\.io\/audiobooks\/.+\/[A-Za-z0-9]{10,}$/.test(u) && id) {
-    try { location.href = "elevenlabs://read/" + id; } catch (e) {}
-    setTimeout(function(){
-      if (!document.hidden && Date.now() - t0 < 4000) { location.replace(u); }
-    }, 1500);
-  } else { location.replace(u); }
+  var h = document.getElementById("h"), m = document.getElementById("m"), go = document.getElementById("go");
+  var foot = document.getElementById("foot");
+
+  function toBook(){
+    if (/^https:\/\/elevenreader\.io\/audiobooks\/.+\/[A-Za-z0-9]{10,}$/.test(u) && id) {
+      var t0 = Date.now();
+      try { location.href = "elevenlabs://read/" + id; } catch (e) {}
+      setTimeout(function(){
+        if (!document.hidden && Date.now() - t0 < 5000) { location.replace(u); }
+      }, 1200);
+    } else { location.replace(u); }
+  }
+
+  function notLive(info){
+    document.title = "Not on sale yet — PutraBooks";
+    h.textContent = "This audiobook is still in final review";
+    m.innerHTML = "ElevenReader has not opened the page for <strong>" + (info.title || "this title") +
+      "</strong> yet. It goes live the moment the review clears, and this link will open straight to it.";
+    var a = document.createElement("a");
+    a.href = "https://putrabooks.github.io/series/" + (info.page || "index.html");
+    a.textContent = "See the ebook and the rest of the series";
+    a.className = "btn";
+    m.appendChild(document.createElement("br"));
+    m.appendChild(document.createElement("br"));
+    m.appendChild(a);
+    var b = document.createElement("a");
+    b.href = u; b.textContent = "Try the page anyway"; b.className = "btn";
+    m.appendChild(b);
+    foot.textContent = "PutraBooks — eBooks on Carousell, Gumroad, Payhip and Ko-fi; audiobooks on ElevenReader.";
+  }
+
+  // Ask our own status file first: a read still in review answers 404 at elevenreader.io.
+  fetch("/go/status.json", {cache: "no-store"}).then(function(r){
+    if (!r.ok) throw new Error("no status");
+    return r.json();
+  }).then(function(s){
+    var pending = s && s.pending && s.pending[id];
+    if (pending) { notLive(pending); return; }
+    toBook();
+  }).catch(function(){ toBook(); });
 })();
 </script></body></html>
