@@ -10,6 +10,7 @@ committed map (tools/page_markers.json) and, unless --offline, with the live pag
 This test fails loudly. There is no fallback and no "close enough": a marker that is present on
 the live page and absent from the render is an AssertionError naming the slug and the marker.
 """
+import html
 import json
 import os
 import re
@@ -110,6 +111,71 @@ def main():
     if failures:
         raise SystemExit(f"{failures} marker failure(s) — the template does not reproduce the live page")
     print("PASS: all four markers reproduce on all three shapes")
+    test_toc_scope()
+
+
+# --- table of contents scope -------------------------------------------------
+# The 2026-11-03 refresh exposed a second defect besides the markers: parse_cards() split the
+# series page on the card opener and kept everything after it, so each card's <li> scan also read
+# the following cards' lists. Generated pages then carried stacked tables of contents (a
+# 14-chapter book got 59 entries). These checks make that impossible to reintroduce.
+
+TOC_KNOWN = {
+    "Building the Biodiversity of Tomorrow": 14,
+    "Building Tomorrow's Startup Founders": 13,
+    "The Telegram Mini-App Playbook": 25,
+    "The Fallen Blossom": 12,
+}
+
+
+def page_toc(slug):
+    path = os.path.join("books", slug)
+    if not os.path.exists(path):
+        return None
+    m = re.search(r'<ol class="toc">(.*?)</ol>', open(path, encoding="utf-8").read(), re.S)
+    # The page stores escaped entities (&#x27;) where the series card stores the character, so
+    # both sides are compared unescaped and the test never fails on encoding alone.
+    return [html.unescape(re.sub(r"<[^>]+>", "", x)).strip()
+            for x in re.findall(r"<li>(.*?)</li>", m.group(1), re.S)] if m else []
+
+
+def test_toc_scope():
+    cards = g.parse_cards()
+    pages = g.existing_pages()
+    failures = 0
+    no_toc = 0
+    for c in cards:
+        c["toc"] = [html.unescape(t) for t in c["toc"]]
+    if len(cards) != len(g.parse_cards()):
+        print("FAIL toc: parse_cards() is not deterministic"); failures += 1
+    for card in cards:
+        title = card["title"]
+        if title in TOC_KNOWN and len(card["toc"]) != TOC_KNOWN[title]:
+            print(f"FAIL toc [{title}]: {len(card['toc'])} entries, expected {TOC_KNOWN[title]}")
+            failures += 1
+        if len(card["toc"]) > 40:
+            print(f"FAIL toc [{title}]: {len(card['toc'])} entries — a card cannot own that many")
+            failures += 1
+        slug = g.find_page(card, pages)
+        live = page_toc(slug) if slug else None
+        if live is None:
+            continue
+        if not live:
+            # Some live pages carry no table of contents at all (built before it existed). There
+            # is nothing there for a leak to contradict, so the scope rule does not apply.
+            no_toc += 1
+            continue
+        # Equal is the normal case. A live page may carry MORE entries than its card because the
+        # old bug stacked neighbours into it; the card's list must then match the page's opening
+        # entries exactly, never reorder them and never run past them.
+        if card["toc"] != live[:len(card["toc"])]:
+            print(f"FAIL toc [{title}] ({slug}): card list is not the opening of the page list\n"
+                  f"   card: {card['toc'][:3]} ({len(card['toc'])})\n   page: {live[:3]} ({len(live)})")
+            failures += 1
+    if failures:
+        raise SystemExit(f"{failures} table-of-contents failure(s)")
+    print(f"PASS: table of contents scoped to each card on all {len(cards)} cards"
+          f" ({no_toc} pages carry no table of contents and cannot contradict it)")
 
 
 if __name__ == "__main__":

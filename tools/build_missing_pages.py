@@ -95,6 +95,11 @@ def parse_cards():
         for m in re.finditer(r'<details class="subsec"><summary>(.*?)</summary>', s, re.S):
             subsecs.append((m.start(), strip_tags(m.group(1)).split("—")[0].strip()))
         for block in s.split('<details><summary class="hascv"')[1:]:
+            # Bound the block to this card. Splitting on the card opener leaves everything that
+            # follows in the string, so a series-level list after the card used to leak into its
+            # contents and inflate the generated table of contents (59 entries for a 14-chapter
+            # book). The card's own </details> is the first one after the opener.
+            block = block.split("</details>", 1)[0]
             m = re.search(r"<b>(.*?)</b>", block, re.S)
             if not m:
                 continue
@@ -103,9 +108,12 @@ def parse_cards():
             cover = re.search(r'<img class="cv" src="([^"]*)"', block)
             dscs = [strip_tags(x) for x in re.findall(r'<p class="dsc"[^>]*>(.*?)</p>', block, re.S)]
             dscs = [d for d in dscs if d and d.lower() != "table of contents"]
-            toc = [strip_tags(x) for x in re.findall(r"<li>(.*?)</li>", block, re.S)]
+            # Only the card's own list is the table of contents. Any other list inside the card
+            # is not content for the page.
+            ol = re.search(r'<ol class="toc">(.*?)</ol>', block, re.S)
+            toc = [strip_tags(x) for x in re.findall(r"<li>(.*?)</li>", ol.group(1), re.S)] if ol else []
             links = {}
-            for a in re.finditer(r'<a [^>]*href="([^"]*)"[^>]*>(.*?)</a>', block[:9000], re.S):
+            for a in re.finditer(r'<a [^>]*href="([^"]*)"[^>]*>(.*?)</a>', block, re.S):
                 href, label = a.group(1), strip_tags(a.group(2))
                 if "gumroad.com/l/" in href:
                     links["gumroad"] = href
@@ -269,6 +277,9 @@ def page_html(card, slug, author, ctx):
     }
     if card["cover"]:
         data["image"] = "https://putrabooks.github.io" + card["cover"]
+    # An Offer only where the card states a price. 17 live pages carry an Offer with no price at
+    # all, from an older template variant; the refresh drops those, which is the one structured
+    # data change it makes (recorded in ISSUES-AND-SOLUTIONS.md).
     if price:
         data["offers"] = {"@type": "Offer", "price": price, "priceCurrency": "USD",
                           "availability": "https://schema.org/InStock", "url": url,
@@ -306,8 +317,7 @@ def page_html(card, slug, author, ctx):
 {buy}{starter}{stores}{allstores}
 {toc_block}
 </article>
-{readthru}
-{shelf}
+{readthru}{shelf}
 </main></body></html>
 """
 
