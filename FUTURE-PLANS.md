@@ -3,28 +3,28 @@
 **Written 2026-11-03.** Open work on the public storefront, in execution order. Each item states
 what unblocks it and whether it needs the owner.
 
-## 1. Keep the repo small — split the binary assets out (recommendation, needs a decision)
+## 1. Size: closed on 2026-11-03 — this repo is text and display assets only
 
-**The constraint:** this repo is **1.37 GB** (measured 2026-11-03 via the GitHub API `size`
-field, 1,370,771 KB), past GitHub's 1 GB recommendation. Pushes still succeed and Pages still
-serves, but the margin is gone: every new binary shortens the path to refused pushes and
-clone timeouts, and a full clone already takes minutes.
+**Done.** The repo was 1.37 GB (GitHub API), now **92.2 MB from a fresh clone** (`size-pack`),
+191.7 MB of working tree. What happened, in order: 98 unreferenced cover masters went to
+`AI-Art-Archive/masters/site-covers/`; the 352.8 MB print staging went to that repo's release
+`attach-queue-2026-11-03`; `downloads/` and `tmp/` went to `AI-Art-Archive/archive/`; the old
+`covers/*.png`, `covers/attach-queue`, `downloads/` and `tmp/` were purged from history; then
+superseded `samples/` blob versions were purged with every current sample file kept
+byte-identical (`SAMPLE-VERSIONS-2026-11-03.csv` proves it). The history was rewritten twice that
+day, see the re-clone section in `HANDOVER.md`.
 
-**What is heavy:** `downloads/` (969 buyer-delivery folders, one per book), `covers/` (101 PNGs),
-`samples/` (free sample PDFs plus QR images). The HTML corpus (1,383 book pages, 12 series pages)
-is small by comparison.
+**The standing rule:** this repo holds HTML, the display JPG/WebP covers, samples and small text
+files. Anything heavier — masters, print staging, delivery folders, batch scratch — lives in
+`PutraBooks/AI-Art-Archive`, never here. `python3 tools/check_repo_size.py` enforces it at 500 MB
+and is part of the push checklist.
 
-**Recommendation, in order:**
-1. Leave the HTML in this repo. It is what Pages serves and what search indexes.
-2. Move `downloads/` to object storage or a separate delivery repo behind short links, keeping
-   `/go/` as the stable public URLs so no buyer link changes. **Owner decision:** where the
-   delivery assets should live (the owner's hosting account), because buyer links must not rot.
-3. Move raw and generated art to `PutraBooks/AI-Art-Archive`, which exists for exactly this
-   (it also enforces the 50 MB per file / 1 GB per repo gates).
-4. Do not add any new binary to this repo in the meantime. Text and small assets only.
+**Do not move samples out and do not change a sample URL:** the owner decided on 2026-11-03 that
+the 147 MB of linked sample PDFs stay exactly where they are, because pages link them directly.
 
-**Unblocked by:** nobody for steps 2-4 mechanically; step 2 needs the owner to name the hosting
-destination.
+**If something heavy appears:** put it in the archive repo first (which has its own 50 MB per file
+/ 1 GB per repo gates, with GitHub Releases as the escape hatch for a 2 GB single file), then link
+to it. Never add a new binary here to save a link.
 
 ## 2. Finish the missing book pages
 
