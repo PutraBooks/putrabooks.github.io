@@ -73,6 +73,13 @@ python3 -m http.server 8000            # preview at http://localhost:8000
 
 ## Traps
 
+- **Size: this repo is at 1.37 GB, past GitHub's 1 GB recommendation.** It works today and pushes
+  succeed, but every new binary moves it closer to refusals and clone timeouts. Future binary
+  additions go elsewhere: raw and generated art belongs in `PutraBooks/AI-Art-Archive`, and the
+  split of `downloads/`, `covers/` and `samples/` is an open recommendation (see
+  `FUTURE-PLANS.md`). Keep this repo text and small assets only. Measured 2026-11-03 via the
+  GitHub API (`size` field, 1,370,771 KB).
+
 - **Public repo.** Anything committed is public forever and is served to buyers. No secrets, no
   customer data, no internal notes with credentials.
 - Generated pages must stay distinguishable: `data-page="generated"` is what the rebuild uses to
