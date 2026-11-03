@@ -119,3 +119,15 @@ your push is rejected or silently resurrects purged objects.
 - **Buyer delivery does not live here.** The old `downloads/<hash>/` folders were unreferenced and moved
   to `PutraBooks/AI-Art-Archive` at `archive/site-downloads/` on 2026-11-03. Gumroad hosts the
   actual buyer files; the `/go/` URLs are the stable public links and must not change.
+
+## State block — 4 November 2026
+
+Counts re-verified on this date: 1,383 pages under `books/`, 50 root HTML pages, 14
+series pages, and 1,446 URLs in `sitemap.xml`. Payhip per-book links now appear on
+1,392 pages, the latest rollouts being the 486 Aira Astralis volumes, the 20 Trading
+Impact News volumes, and Al-Kawthar. Two commits landed remotely on this date from
+another session (`946bf112`, `2876fa1f`); local was fast-forwarded to them rather
+than pushing over them, so remote and local agree at `2876fa1f21`.
+
+Cross-repository map for a new owner:
+`PutraBooks/AidenNightfall-TheDarkMysteries/REPO-INDEX-2026-11-04.md`.
