@@ -83,7 +83,7 @@ your push is rejected or silently resurrects purged objects.
 
 - **Hashes that no longer resolve:** everything up to and including `0e5082f1` (the site tree
   after the first rewrite), and before that `db45eec0`, `f247fa5`, `53e0c16c`, `59dcd522`,
-  `72bcf17b`, `d0d09d84`. Current head is `37223d3`.
+  `72bcf17b`, `d0d09d84`. Current head is `27acacb` (the rewrite landed in `37223d3`).
 - **Backups of the pre-rewrite repo** (bare mirrors, outside every working tree, on the agent
   host): `/app/backups/site-mirror.git` (1,407,175,868 bytes, head `db45eec0`, before any purge),
   `/app/backups/site-mirror-pre-purge.git` (1,407,177,942 bytes, head `d0d09d84`, before the first
