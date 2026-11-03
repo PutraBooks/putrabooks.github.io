@@ -32,22 +32,30 @@ to it. Never add a new binary here to save a link.
 listings had no page as of 2026-11-01 **[R]** `README.md`. Building them is unblocked and safe:
 `--report` writes nothing, the build writes only new files.
 
-## 3. Repair `parse_cards()` before any `--refresh` (blocks item 4)
+## 3. `parse_cards()` and the refresh — DONE 2026-11-03
 
-`--refresh` re-renders 783 generated pages. A dry run on 2026-11-03 confirmed that the four page
-markers now survive, but that **the table of contents grows on 4 pages** because `parse_cards()`
-reads `<li>` elements from the whole card block, so a series-level list leaks into a book's TOC
-(`building-the-biodiversity-of-tomorrow.html` 14 → 59 entries, `building-tomorrows-startup-founders.html`
-13 → 58, `the-fallen-blossom.html` 12 → 28, `the-telegram-mini-app-playbook.html` 25 → 26).
-See `ISSUES-AND-SOLUTIONS.md` 2026-11-03. Until that is fixed, do not run `--refresh` on the live
-tree.
+**Fixed.** `parse_cards()` split a series page on the card opener and scanned the rest of the file,
+so each card read its neighbours' chapters and sample links; nine cards were affected. The block is
+now bounded at the card's own `</details>` and contents come only from that card's
+`<ol class="toc">` (`b8f71b5`). `tools/test_build_missing_pages.py` proves the four markers on three
+page shapes and the contents scope on all 1,146 cards.
 
-## 4. Re-run the refresh and commit it, once item 3 is fixed
+**Verified and applied.** The refresh ran in a scratch copy first: 783 pages, 764 byte-identical, 19
+differing and each one accounted for (`tools/REFRESH-2026-11-03.md`). Two pages built from a mixed
+card were corrected, and 17 archetype pages lost an `Offer` block with no price. Applied in
+`9c1b756`; markers unchanged on all 783 pages.
 
-Then: refresh into a scratch tree, confirm zero unintended content change (only intended marker
-additions), and commit. Verification is `tools/test_build_missing_pages.py` plus a marker diff.
+**If you change the template again:** scratch refresh, classify every changed file, then apply. Do
+not run a generator against the live tree until a test proves it reproduces that tree.
 
-## 5. Sitemap and IndexNow after any page change
+## 4. Sitemap rebuilding — DONE, with one trap closed
+
+`python3 tools/build_sitemap.py --check` used to be ignored and rewrote `sitemap.xml`, which is how a
+rebuild stripped `<priority>` from all 1,446 URLs. Both are fixed (`49e5385`, `4a9e030`): the
+generator emits the priority scheme the live file carries, and `--check` now compares, reports
+`OUT OF DATE` and exits 1 without writing.
+
+## 5. IndexNow after any page change (sitemap itself is current: 1,446 URLs)
 
 `python3 tools/build_sitemap.py` then ping IndexNow with the key file already at the repo root.
 Unblocked.
