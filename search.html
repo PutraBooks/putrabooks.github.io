@@ -1,0 +1,78 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Search 1,383 books | PutraBooks</title>
+<meta name="description" content="Search 1,383 DRM-free ebooks by title, series or author. Free samples for most titles.">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta property="og:title" content="Search PutraBooks"><meta property="og:type" content="website">
+<meta property="og:url" content="https://putrabooks.github.io/search.html">
+<link rel="canonical" href="https://putrabooks.github.io/search.html">
+<style>
+:root{--bg:#0e0f13;--card:#171922;--ink:#e8e6e1;--mut:#9a97a0;--gold:#d4a94e}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif;line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+header{padding:20px 0;border-bottom:1px solid #23252f;display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:1.3rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;text-decoration:none;font-weight:bold}
+nav a{color:var(--mut);text-decoration:none;margin-left:22px;font-size:.95rem;font-family:Helvetica,Arial,sans-serif}
+nav a:hover{color:var(--ink)}
+h1{font-weight:normal;font-size:1.9rem;margin:44px 0 6px}
+.sub{color:var(--mut);font-size:.95rem;font-family:Helvetica,Arial,sans-serif;margin-bottom:22px}
+#q{width:100%;padding:15px 18px;font-size:1.05rem;font-family:Helvetica,Arial,sans-serif;background:var(--card);color:var(--ink);border:1px solid #23252f;border-radius:8px}
+#q:focus{outline:none;border-color:var(--gold)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 6px}
+.row select{padding:9px 12px;background:var(--card);color:var(--ink);border:1px solid #23252f;border-radius:6px;font-family:Helvetica,Arial,sans-serif;font-size:.9rem}
+.count{color:var(--mut);font-size:.88rem;font-family:Helvetica,Arial,sans-serif;margin:16px 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:22px;padding:18px 0 60px}
+.b{text-align:center;text-decoration:none;color:var(--ink)}
+.b img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:6px;border:1px solid #23252f;display:block;background:#171922}
+.b span{display:block;font-size:.84rem;margin-top:9px;font-family:Helvetica,Arial,sans-serif}
+.b em{display:block;color:var(--mut);font-size:.75rem;font-style:normal;font-family:Helvetica,Arial,sans-serif;margin-top:3px}
+.b:hover span{color:var(--gold)}
+footer{border-top:1px solid #23252f;padding:26px 0 50px;color:var(--mut);font-size:.86rem;font-family:Helvetica,Arial,sans-serif}
+footer a{color:var(--mut)}
+</style></head><body>
+<header class="wrap"><a class="brand" href="/">PutraBooks</a><nav><a href="/">Home</a><a href="/free/putrabooks-free-sampler.pdf">Free sampler</a></nav></header>
+<main class="wrap">
+<h1>Search the catalogue</h1>
+<p class="sub">1,383 titles across every imprint. Free samples on most of them.</p>
+<input id="q" type="search" placeholder="Title, series or author" autocomplete="off" autofocus>
+<div class="row"><select id="s"><option value="">All series</option><option value="Aira Astralis">Aira Astralis</option><option value="Building Infrastructure of Tomorrow">Building Infrastructure of Tomorrow</option><option value="Building Tomorrow&#x27;s People">Building Tomorrow&#x27;s People</option><option value="Building of Tomorrow">Building of Tomorrow</option><option value="Building the Infrastructure of Tomorrow">Building the Infrastructure of Tomorrow</option><option value="Digital Income">Digital Income</option><option value="Digital Income 2">Digital Income 2</option><option value="NurOne">NurOne</option><option value="The Archetype Series">The Archetype Series</option><option value="The Dark Mysteries">The Dark Mysteries</option><option value="The Guardian&#x27;s Shadow">The Guardian&#x27;s Shadow</option><option value="The Prophet (NurOne Qur’an Studies)">The Prophet (NurOne Qur’an Studies)</option><option value="Trading Impact News">Trading Impact News</option><option value="True Stories">True Stories</option></select></div>
+<p class="count" id="count">Type to search.</p>
+<div class="grid" id="g"></div>
+</main>
+<footer class="wrap"><a href="/">PutraBooks</a> &middot; DRM-free EPUB and PDF &middot; <a href="/free/putrabooks-free-sampler.pdf">Free sampler</a></footer>
+<script>
+var IDX=[],Q=document.getElementById('q'),S=document.getElementById('s'),G=document.getElementById('g'),C=document.getElementById('count');
+function norm(s){return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
+var ready=false;
+function load(cb){
+  if(ready){cb();return}
+  fetch('/search-index.json').then(function(r){return r.json()}).then(function(d){
+    IDX=d.map(function(b){b.k=norm(b.t+' '+b.s+' '+b.a);return b});
+    ready=true;cb();
+  });
+}
+/* 491KB of index is not worth fetching for someone who never types */
+Q.addEventListener('focus',function(){load(function(){})});
+function run(){
+  if(!ready){load(run);C.textContent='Loading catalogue…';return}
+  var q=norm(Q.value.trim()),ser=S.value,hits=[];
+  for(var i=0;i<IDX.length;i++){var b=IDX[i];
+    if(ser&&b.s!==ser)continue;
+    if(q&&b.k.indexOf(q)<0)continue;
+    hits.push(b);
+  }
+  hits.sort(function(a,b){
+    var as=norm(a.t).indexOf(q)===0?0:1,bs=norm(b.t).indexOf(q)===0?0:1;
+    return as!==bs?as-bs:a.t.localeCompare(b.t);
+  });
+  C.textContent=q||ser?hits.length+' book'+(hits.length===1?'':'s'):IDX.length+' books. Type to search.';
+  var out='',lim=Math.min(hits.length,120);
+  for(var j=0;j<lim;j++){var b=hits[j];
+    out+='<a class="b" href="'+b.u+'"><img loading="lazy" src="'+b.c+'" alt="Cover of '+b.t.replace(/"/g,'')+'"><span>'+b.t+'</span><em>'+b.s+'</em></a>';
+  }
+  G.innerHTML=out;
+  if(hits.length>lim)C.textContent+=' — showing first '+lim+', refine your search';
+  document.title=(q?q+' — ':'')+'Search '+IDX.length+' books | PutraBooks';
+}
+Q.addEventListener('input',run);S.addEventListener('change',run);
+</script>
+</body></html>
