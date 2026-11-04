@@ -107,7 +107,7 @@ script: an argument is not a mode.
 
 ---
 
-## 2026-11-03 — an argument is not a mode: probing a script with --help can execute it (OPEN)
+## 2026-11-03 — an argument is not a mode: probing a script with --help can execute it (CLOSED 2026-11-04)
 
 **What you see.** `python3 tools/<script>.py --help` is not harmless in this repo's scripts. During
 the 2026-11-03 inventory, probing `build_pages.py` with `--help` wrote six `out_*.html` files before
@@ -120,6 +120,17 @@ unknown flag falls through to the default action, which writes.
 1. Parse argv explicitly and exit 2 on an unknown flag.
 2. Give every script a `--dry-run` that prints what it would write.
 3. Never probe a script with `--help` until it has step 1; read its `__main__` block instead.
+
+**Fixed 2026-11-04.** Every script with a `__main__` block and no `argparse` now starts that block
+with the same four lines: if `-h` or `--help` is in `sys.argv[1:]`, print the module docstring and
+`raise SystemExit(2)` before any work. 29 scripts across `tools/`, `Gumroad/Scripts` and
+`Scripts/samples` were patched; every patched `tools/` script was then probed and each exits 2 with
+`git status` unchanged. `check_repo_size.py` and the `qr/` composers already use argparse, so they
+print usage and exit 0 the standard way.
+
+**One script found dead in passing.** `tools/build_elevenreader_pages.py` cannot run at all: it does
+`import status_sweep as S` and no `status_sweep.py` exists anywhere in the workspace, so `--help`
+reaches the import error before the guard. Left as found; recorded separately.
 
 **Confirm.** `python3 tools/<script>.py --help` exits 2 and leaves the tree clean.
 

@@ -101,4 +101,8 @@ def main(argv=sys.argv[1:]):
 
 
 if __name__ == "__main__":
+    # an argument is not a mode: probing for usage must never run the work
+    if any(a in ("-h", "--help") for a in sys.argv[1:]):
+        print(__doc__ or "usage: see the docstring at the top of this file")
+        raise SystemExit(2)
     sys.exit(main())
