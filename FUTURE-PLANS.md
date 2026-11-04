@@ -28,9 +28,13 @@ to it. Never add a new binary here to save a link.
 
 ## 2. Finish the missing book pages
 
-`python3 tools/build_missing_pages.py --report` lists the cards with no page. 358 Carousell
-listings had no page as of 2026-11-01 **[R]** `README.md`. Building them is unblocked and safe:
-`--report` writes nothing, the build writes only new files.
+**CLOSED 2026-11-04 — there is nothing to build.** `python3 tools/build_missing_pages.py --report`
+now reads **1,146 cards, 1,146 matched to existing pages, 0 missing**. The 358 figure was a matcher
+artifact, not a backlog: an exact-title lookup against each page's `<h1>`, which carries the subtitle
+("The Cursed Hunter: The Personality That Becomes the Thing It Hunts"), so 27 books that already had
+pages read as missing and the build would have written a second page for each under a `-2` slug. The
+lookup now accepts a unique title-on-a-word-boundary match; a page is only built where a real
+Carousell listing URL exists (`--only-with-listing`), so a title nobody can buy never gets a page.
 
 ## 3. `parse_cards()` and the refresh — DONE 2026-11-03
 

@@ -70,7 +70,9 @@ python3 -m http.server 8000            # preview at http://localhost:8000
   `PutraBooks/Gumroad/Documents/FUTURE-PLANS.md` and the 2026-11-03 entry in its
   `ISSUES-AND-SOLUTIONS.md`. Do not run `--refresh` on the live tree until the generator is fixed
   and its test passes. `--report` is safe.
-- 358 books have a Carousell listing but no page here yet **[R]** — see `tools/build_missing_pages.py --report`.
+- ~~358 books have a Carousell listing but no page here yet~~ **Not so (2026-11-04):** all 1,146
+  cards resolve to an existing page, 0 missing. The old count came from an exact-title lookup
+  that missed pages whose `<h1>` carries the subtitle; see `FUTURE-PLANS.md` item 2.
 
 ## History rewrite, 2026-11-03 — re-clone before you work here
 

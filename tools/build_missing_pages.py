@@ -18,6 +18,9 @@ import re
 import sys
 
 REPORT = "--report" in sys.argv
+# A page is only worth building where a buyer can actually reach the book: the owner's rule is
+# one page per real listing URL, and no page for a title nobody can buy yet.
+ONLY_WITH_LISTING = "--only-with-listing" in sys.argv
 
 PEN = {
     "aira-astralis.html": "Aira Astralis",
@@ -160,12 +163,23 @@ def existing_pages():
 
 
 def find_page(card, pages):
+    """Exact title, then title on a word boundary.
+
+    A page's <h1> carries the full title, subtitle included ("the cursed hunter the personality
+    that becomes the thing it hunts"), so an exact-key lookup missed 27 books that already had
+    pages and would have written a second page for each under a `-2` slug. The prefix test is
+    only accepted when exactly one page matches it, so a near-duplicate can never be guessed at.
+    """
     keys = [norm(card["title"])]
     if card["subtitle"]:
         keys.append(norm(card["title"] + " " + card["subtitle"]))
     for k in keys:
         if k in pages:
             return pages[k]
+    prefix = norm(card["title"]) + " "
+    hits = {f for k, f in pages.items() if k.startswith(prefix)}
+    if len(hits) == 1:
+        return hits.pop()
     return None
 
 
@@ -366,6 +380,12 @@ def main():
     print("with gumroad:", sum(1 for c in missing if "gumroad" in c["links"]))
     print("with carousell:", sum(1 for c in missing if "carousell" in c["links"]))
     print("with sample:", sum(1 for c in missing if "sample" in c["links"]))
+    if ONLY_WITH_LISTING:
+        skipped = [c for c in missing if not c["links"].get("carousell")]
+        missing = [c for c in missing if c["links"].get("carousell")]
+        print(f"restricted to cards with a real Carousell listing: {len(missing)} build, {len(skipped)} skip")
+        for c in skipped:
+            print(f"  skip (no listing URL): {c['title']}")
     if REPORT:
         return
 
