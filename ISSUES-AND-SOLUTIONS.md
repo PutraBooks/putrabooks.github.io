@@ -185,7 +185,12 @@ never here.
 
 ---
 
-## 2026-11-03 — 17 archetype pages carry an Offer with no price (OPEN, cosmetic)
+## 2026-11-03 — book pages carry an Offer with no price (OPEN, measured 2026-11-04: 583 of 1,383)
+
+**Corrected count.** The 17 archetype pages named when this was filed are now clean; a refresh
+removed their Offer blocks. A full sweep on 2026-11-04 finds the same defect on **583 of 1,383
+book pages**, across every series, not just the archetypes: `books/al-a-raf-the-heights-between-
+paradise-and-hell.html` and 582 others emit `availability`, `url` and `seller` with no `price`.
 
 **What you see.** `books/the-austere-duelist.html` and 16 other archetype pages include
 `"offers":{"@type":"Offer","availability":…,"url":…,"seller":…}` with no `price` key.
