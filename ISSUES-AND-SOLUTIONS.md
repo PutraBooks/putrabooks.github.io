@@ -196,7 +196,23 @@ never here.
 
 ---
 
-## 2026-11-03 — book pages carry an Offer with no price (OPEN, measured 2026-11-04: 583 of 1,383)
+## 2026-11-04 — an Offer must state a real price or not exist (CLOSED)
+
+**What it was.** Book pages emitted an `Offer` with `availability`, `url` and `seller` but no `price`.
+The 2026-11-03 entry counted 17 archetype pages; a JSON-level sweep found 583 of 1,383.
+
+**Rule applied, on the owner's instruction.** If the title exists in the live Gumroad catalogue, the
+Offer carries that product's real price. If it does not, the Offer is removed entirely and the Book
+node keeps its name, author, image, description and url. No price was invented; nothing was marked
+free to fill the gap. No live product is priced at zero, so the zero case never arose.
+
+**Result, re-run on the consolidated tree after the 67-page merge.** 534 Offers found across 1,383
+pages: **125 priced at 0.99 USD**, **409 removed**. Sweep after the change: 125 Offers, all priced,
+**zero price-less**, zero invalid JSON-LD blocks.
+
+**Sweep method matters.** A regex that runs to the first `}` stops at the nested `seller` object and
+never sees the `price` that follows it, which is how the original count was overstated in the other
+direction. Parse the JSON-LD block and inspect the Offer object.
 
 **Corrected count.** The 17 archetype pages named when this was filed are now clean; a refresh
 removed their Offer blocks. A full sweep on 2026-11-04 finds the same defect on **583 of 1,383
