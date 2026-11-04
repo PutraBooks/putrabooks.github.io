@@ -203,6 +203,12 @@ removed their Offer blocks. A full sweep on 2026-11-04 finds the same defect on 
 book pages**, across every series, not just the archetypes: `books/al-a-raf-the-heights-between-
 paradise-and-hell.html` and 582 others emit `availability`, `url` and `seller` with no `price`.
 
+**Why it is not patched yet.** A price can only be stated if it is known, and for most of these it is
+not. The 583 Offers point at two places: 371 at putrabooks.github.io redirect pages, 212 at ko-fi.com.
+Matching page titles against the live Gumroad catalogue finds a verified $0.99 for **154** of them;
+the remaining **429** are titles with no Gumroad listing to read a price from (the al-A'raf, al-Kawthar
+and finance titles among them), so any number written there would be invented.
+
 **What you see.** `books/the-austere-duelist.html` and 16 other archetype pages include
 `"offers":{"@type":"Offer","availability":…,"url":…,"seller":…}` with no `price` key.
 
