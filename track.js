@@ -13,13 +13,13 @@
     : p.indexOf('/series/') === 0 ? 'series'
     : p === '/' ? 'home' : 'store';
 
+  // No screen size, no user agent, no cookie, no IP: page, referrer and campaign only.
   var base = {
     p: location.pathname,
     t: pageType,
     r: document.referrer ? (function () { try { return new URL(document.referrer).hostname; } catch (e) { return ''; } })() : '',
     u: q.get('utm_source') || '',
-    m: q.get('utm_campaign') || '',
-    s: (screen.width || 0) + 'x' + (screen.height || 0)
+    m: q.get('utm_campaign') || ''
   };
 
   function send(o) {
