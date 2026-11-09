@@ -134,7 +134,18 @@ def main():
                         "@type": "ListItem", "position": pos,
                         "name": html.unescape(title_of(pages[sl][1]) or sl),
                         "url": f"https://putrabooks.github.io/books/{sl}.html"})
-                d["numberOfItems"] = len(d["itemListElement"])
+                # de-duplicate: this page had 15 entries pointing at the same volumes, which
+                # makes numberOfItems meaningless. Re-number after collapsing.
+                seen, keep = set(), []
+                for i in d["itemListElement"]:
+                    u = i.get("url", "")
+                    if u in seen:
+                        continue
+                    seen.add(u)
+                    i["position"] = len(keep) + 1
+                    keep.append(i)
+                d["itemListElement"] = keep
+                d["numberOfItems"] = len(keep)
                 s = s[:m.start(2)] + json.dumps(d, ensure_ascii=False) + s[m.end(2):]
             except Exception as e:
                 print("   ItemList not updated:", e)
