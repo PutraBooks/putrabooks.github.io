@@ -29,10 +29,19 @@ a{color:#d4a94e}.btn{display:inline-block;border:1px solid #d4a94e;border-radius
   }
 
   function notLive(info){
-    document.title = "Not on sale yet — PutraBooks";
-    h.textContent = "This audiobook is still in final review";
-    m.innerHTML = "ElevenReader has not opened the page for <strong>" + (info.title || "this title") +
-      "</strong> yet. It goes live the moment the review clears, and this link will open straight to it.";
+    var state = info && info.state;
+    var rejected = state === "manually_rejected", unknown = state === "unknown";
+    document.title = (rejected ? "Edition being updated" : unknown ? "Not available right now" : "Not on sale yet") + " — PutraBooks";
+    h.textContent = rejected ? "This edition is being updated"
+      : unknown ? "This audiobook isn't open right now"
+      : "This audiobook is still in final review";
+    m.innerHTML = rejected
+      ? "The audio edition of <strong>" + (info.title || "this title") +
+        "</strong> is off the shelf while its cover and opening pages are corrected. The ebook, the free sample and the rest of the series are available now."
+      : unknown
+      ? "This link points at an audio edition that is no longer live. The ebook, the free sample and the rest of the series are available now."
+      : "ElevenReader has not opened the page for <strong>" + (info.title || "this title") +
+        "</strong> yet. It goes live the moment the review clears, and this link will open straight to it.";
     var a = document.createElement("a");
     a.href = "https://putrabooks.github.io/series/" + (info.page || "index.html");
     a.textContent = "See the ebook and the rest of the series";
@@ -53,6 +62,10 @@ a{color:#d4a94e}.btn{display:inline-block;border:1px solid #d4a94e;border-radius
   }).then(function(s){
     var pending = s && s.pending && s.pending[id];
     if (pending) { notLive(pending); return; }
+    /* An id that is neither live nor pending is a withdrawn, rejected or re-created read.
+       Redirecting it blindly sent visitors to a 404, so treat it as not-on-sale instead. */
+    var live = (s && s.live) || [];
+    if (live.length && live.indexOf(id) === -1) { notLive({state: "unknown"}); return; }
     toBook();
   }).catch(function(){ toBook(); });
 })();
