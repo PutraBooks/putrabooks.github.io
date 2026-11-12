@@ -3,7 +3,7 @@
 Public storefront, catalogue and buyer-delivery site for PutraBooks, the Carousell
 ebook business (`carousell.sg/u/putrabooks`). **969 books listed on Carousell** — 967
 active S$1 ebook listings plus 2 sold — all delivered as PDFs after purchase, and
-**1,141 books have their own page on this site** (as of 2026-11-01).
+**1,390 books have their own page on this site** (measured 2026-11-12, see [`STATUS.md`](STATUS.md)).
 
 > **Contributing/ops rule of thumb:** see [`REPO-RULES.md`](REPO-RULES.md) — what belongs in this public repo, what never does, and the sale-delivery summary.
 
@@ -14,11 +14,11 @@ active S$1 ebook listings plus 2 sold — all delivered as PDFs after purchase, 
 | `index.html` | Brand landing page |
 | `carousell-<series>.html` | Shelf pages: all active Carousell listings, grouped into series |
 | `gumroad-*.html`, `kindle-*.html`, `kobo-*.html`, `elevenreader-*.html` | Store redirect pages for other sales channels |
-| `books/` | **One page per book (1,141)** — cover, table of contents, buy button, store links, `Book` schema. 783 of them are generated from the series card data and marked `data-page="generated"` |
-| `series/` | Series information pages (12) |
-| `covers/` | Book cover art (101 PNGs) |
-| `samples/` | Free sample PDFs per series, each with a matching QR code |
-| `downloads/<hash>/` | **Buyer delivery folders** — one per book (969). See below |
+| `books/` | **One page per book (1,390)** — cover, table of contents, buy button, store links, `Book` schema. 772 of them are generated from the series card data and marked `data-page="generated"` |
+| `series/` | Series information pages (14) |
+| `covers/` | Book cover art (82 PNGs) |
+| `samples/` | Free sample PDFs per series, each with a matching QR code (1,303 PDFs, 1,282 QRs) |
+| `downloads/<hash>/` | **Buyer delivery folders** — one per book. Only one exists on 2026-11-12; see [`STATUS.md`](STATUS.md) |
 | `go/` | Short-link redirect pages |
 | `sitemap.xml`, `sitemap-samples.xml`, `robots.txt` | Search engine setup (submitted via IndexNow): 1,177 page URLs and 1,280 sample URLs |
 | `track.js` | The analytics beacon: one row per page view, outbound store click and sample download, posted to the Base44 function `trackSiteEvent`. No cookies, no IP stored |
