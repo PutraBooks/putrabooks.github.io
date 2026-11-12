@@ -50,3 +50,14 @@ read either as a completeness metric on its own.
 - [`FUTURE-PLANS.md`](FUTURE-PLANS.md) — what is next, and what was closed.
 - [`ISSUES-AND-SOLUTIONS.md`](ISSUES-AND-SOLUTIONS.md) — symptom, cause, fix, confirm per issue.
 - [`REPO-RULES.md`](REPO-RULES.md) — what belongs in this public repo and what never does.
+
+## Machine-readable pages, 2026-11-12
+
+| Path | What it is |
+|---|---|
+| `manifest/gumroad-finish.json` | 80 entries, one per book whose cover, thumbnail, sample and QR are all public, carrying description, ten tags, price and the Gumroad-hosted EPUB and PDF URLs. Read by the `gumroadAutoFinish` function |
+| `go/status.json` | short-link status |
+
+The manifest is generated, never hand-edited: `Scripts/build_finish_manifest.py` in the Gumroad repo
+writes it from what actually exists on disk, so an entry means the four artefacts were verified present
+at generation time.
